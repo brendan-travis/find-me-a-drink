@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  namespace: drink
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /find-me-a-drink(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: find-me-a-drink-api
+            port:
+              number: 80

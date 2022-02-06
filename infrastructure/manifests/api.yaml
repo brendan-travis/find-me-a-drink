@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: find-me-a-drink-api
+  labels:
+    app: find-me-a-drink-api
+  namespace: drink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: find-me-a-drink-api
+  template:
+    metadata:
+      labels:
+        app: find-me-a-drink-api
+    spec:
+      containers:
+      - name: api
+        image: localhost:5000/find-me-a-drink-api:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: ConnectionStrings__Database
+          value: "User ID=postgres;Password=SecretPassword123;Host=10.96.1.1;Port=5432;Database=postgres;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: find-me-a-drink-api
+  namespace: drink
+spec:
+  type: ClusterIP
+  selector:
+    app: find-me-a-drink-api
+  ports:
+    - port: 80
+      targetPort: 80
