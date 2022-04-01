@@ -37,7 +37,9 @@ public class LocationsController : ControllerBase
         [FromQuery(Name = "sort_by_rating")] string? sortByRating = null,
         [FromQuery(Name = "tag_filter")] string? tagFilter = null,
         [FromQuery(Name = "category_filter")] string? categoryFilter = null,
-        [FromQuery(Name = "keyword_filter")] string? keywordFilter = null)
+        [FromQuery(Name = "keyword_filter")] string? keywordFilter = null,
+        [FromQuery(Name = "rating_filter")] string? ratingFilter = null,
+        [FromQuery(Name = "rating_value_filter")] double? ratingValueFilter = null)
     {
         var pagination = new Pagination
         {
@@ -52,7 +54,9 @@ public class LocationsController : ControllerBase
         {
             Tags = tagFilter,
             Categories = categoryFilter,
-            Keyword = keywordFilter
+            Keyword = keywordFilter,
+            Rating = ratingFilter,
+            RatingValue = ratingValueFilter
         };
 
         var locations = await this.LocationService.GetLocations(pagination, sorting, filter);

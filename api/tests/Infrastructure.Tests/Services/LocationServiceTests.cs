@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Models;
 using Core.Repositories;
+using Core.Services;
 using FluentAssertions;
 using Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
@@ -69,11 +70,13 @@ public class LocationServiceTests
     #region Setup
 
     private LocationService GetSystemUnderTest(IConfiguration configuration) =>
-        new LocationService(this.LocationRepository, this.MockLocationRepository, configuration);
+        new LocationService(this.LocationRepository, this.MockLocationRepository, configuration, this.FilteringService);
 
     private ILocationRepository LocationRepository { get; } = Substitute.For<ILocationRepository>();
 
     private IMockLocationRepository MockLocationRepository { get; } = Substitute.For<IMockLocationRepository>();
+
+    private IFilteringService FilteringService { get; } = Substitute.For<IFilteringService>();
 
     #endregion
 }

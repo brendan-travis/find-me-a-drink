@@ -30,6 +30,7 @@ builder.Services.AddTransient<ILocationRepository, LocationRepository>();
 builder.Services.AddSingleton<IMockLocationRepository, MockLocationRepository>();
 builder.Services.AddTransient<ILocationService, LocationService>();
 builder.Services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
+builder.Services.AddTransient<IFilteringService, FilteringService>();
 
 var app = builder.Build();
 

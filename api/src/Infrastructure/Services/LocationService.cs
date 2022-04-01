@@ -8,11 +8,12 @@ namespace Infrastructure.Services;
 public class LocationService : ILocationService
 {
     public LocationService(ILocationRepository locationRepository, IMockLocationRepository mockLocationRepository,
-        IConfiguration configuration)
+        IConfiguration configuration, IFilteringService filteringService)
     {
         this.LocationRepository = locationRepository;
         this.MockLocationRepository = mockLocationRepository;
         this.Configuration = configuration;
+        this.FilteringService = filteringService;
     }
 
     private ILocationRepository LocationRepository { get; }
@@ -20,17 +21,30 @@ public class LocationService : ILocationService
     private IMockLocationRepository MockLocationRepository { get; }
 
     private IConfiguration Configuration { get; }
+    
+    private IFilteringService FilteringService { get; }
 
     public async Task<LocationResponse> GetLocations(
         Pagination pagination,
         Sorting? sorting = null,
         Filter? filter = null)
     {
+        LocationResponse result;
+        
         if (bool.Parse(this.Configuration["MockData"]))
         {
-            return this.MockLocationRepository.GetLocations(pagination, sorting, filter);
+            result = this.MockLocationRepository.GetLocations(pagination, sorting, filter);
+        }
+        else
+        {
+            result = await this.LocationRepository.GetLocations(pagination, sorting, filter);
         }
 
-        return await this.LocationRepository.GetLocations(pagination, sorting, filter);
+        if (filter?.Rating is not null)
+        {
+            result = this.FilteringService.FilterByAggregatedRatings(result, filter);
+        }
+
+        return result;
     }
 }
